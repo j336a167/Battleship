@@ -132,6 +132,11 @@ void Player::fire(int row, char col)
 
     }
   }
+  else if(location == 'X')
+  {
+    std::cout << "You shot at a sunken ship. \n";
+    return;
+  }
 }
 
 
