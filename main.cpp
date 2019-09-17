@@ -1,4 +1,7 @@
 #include "Player.h"
+#include <limits>   //  i cant compile without these in WINDOW
+using namespace std;
+
 
 void isInt(int& checkInt)
 {
@@ -12,7 +15,31 @@ void isInt(int& checkInt)
     std::cin >> checkInt;
   }
 }
+void isRow(int& checkRow)
+{
+  std::cin >> checkRow;
 
+  while (std::cin.fail())
+  {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cout << "ERROR: Please enter an integer (1 - 8): ";
+    std::cin >> checkRow;
+  }
+}
+void isColumn(char& checkColumn)
+{
+  std::cin >> checkColumn;
+
+  while (std::cin.fail())
+  {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cout << "ERROR: Please enter a letter (A - G): ";
+    std::cin >> checkColumn;
+  }
+  toupper(checkColumn);//lower case input support should be covered by this
+}
 int main(int argc, const char* argv[])
 {
   std::cout << "\n\nWelcome to Battleship!\n\n";
@@ -26,26 +53,70 @@ int main(int argc, const char* argv[])
 
   Player player1;
   player1.createBoard();
-  player1.printBoard();
+  player1.addShip(numberShips);
+  Player player2;
+  player2.createBoard();
+  player2.addShip(numberShips);
 
-  for(int i = 0; i < numberShips; i++)
+  //ships are now set, so begin letting players fire onto the other player's board
+  //after each fire, you call playerx.checkForWin() and if it returns true then print game over (and which player won) and return
+  bool gameOver = false;
+  int row;
+  char column;
+  while (!gameOver)
   {
-    //call setShips() [AUSTIN] - direction & coordinates
+    player1.printBoard();
+    row = 0;
+    while (row <= 0 || row > 8)
+    {
+      std::cout << "Player 1, which row will you fire at (1 - 8)?";
+      isRow(row);
+    }
+    column = 'Z';
+    while (column!='A'&&column!='B'&&column!='C'&&column!='D'&&column!='E'&&column!='F'&&column!='G')
+    {
+      std::cout << "Player 1, which column will you fire at (A - G)?";
+      isColumn(column);
+    }
+    player1.fire(row, column);
+    if(player1.checkForWin())
+    {
+      gameOver = true;
+      std::cout << "\n\n Player 1 sunk all of Player 2's battleships! Player 1 wins!";
+      break;
+    }
+    row = 0;
+    column = 'Z';
+    player2.printBoard();
+    while (row <= 0 || row > 8)
+    {
+      std::cout << "Player 2, which row will you fire at (1 - 8)?";
+      isRow(row);
+    }
+    column = 'Z';
+    while (column!='A'&&column!='B'&&column!='C'&&column!='D'&&column!='E'&&column!='F'&&column!='G')
+    {
+      std::cout << "Player 2, which column will you fire at (A - G)?";
+      isColumn(column);
+    }
+    player2.fire(row, column);
+    if(player2.checkForWin())
+    {
+      gameOver = true;
+      std::cout << "\n\n Player 2 sunk all of Player 1's battleships! Player 2 wins!";
+    }
   }
 
-  //1. Player 1 determines number of ships to play with (FORCED VALID INPUT)
-  //2. Player 1's board is created and they begin placing ships
-  //      ENTER FOR-LOOP
-  //3. Player 1 is prompted for direction of placement (vertical/horiztonal)
-  //4. Player 1 is prompted for a coordinate of some end-point (left OR bottom) of ship
-  //5. Player 1's input is passed into a function to verify if the placement is VALID or not,
-  //    IF NOT VALID, then Player 1 is re-prompted for direction and coordinate
-  //6. Once placement IS VALID, some other function places the ship on the correct player's BOARD and
-  //    coordinates of that entire ship are stored with addCoordinate(row,col)
-  //    ship is then added to PLAYER
-  //7. Process repeats for number of ships Player 1 picked to play with
-  //8. ship placement control swtiches to Player 2 and steps 2-7 are repeated.
-  //9. THIS IS WHERE THE GAME BEGINS...
+  //TESTS:
+  /*player1.fire(1, 'E');
+  player1.fire(2, 'E');
+  player1.fire(3, 'E');
+  player1.fire(4, 'E');
+  player1.fire(5, 'E');
+  player1.fire(6, 'E');
+  player1.fire(7, 'E');
+  player1.fire(8, 'E');
+  player1.printBoard();*/
 
 
 
