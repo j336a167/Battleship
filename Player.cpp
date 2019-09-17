@@ -123,7 +123,6 @@ void Player::fire(int row, char col)
         gameBoard[row][convertColumn(col)] = 'H'; //updates board
         if(m_ships[i].getLength() == 0)
         {
-          m_ships.erase(i); //Will erase the ship from the vector of ships if it's length equals 0
           m_shipCount--; //Decreases the ship count once the ship is erased from the vector
           std::cout << "You sunk a ship! \n";
         }
